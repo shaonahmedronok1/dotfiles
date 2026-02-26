@@ -1,0 +1,102 @@
+"$schema" = "https://yazi-rs.github.io/schemas/theme.json"
+
+[mgr]
+cwd = { fg = "black", bold = true }
+
+hovered = { bg = "#00F2FF", fg = "black", bold = true }
+preview_hovered = { bg = "#00F2FF", fg = "black" }
+
+find_keyword = { fg = "black", bg = "yellow", bold = true }
+find_position = { fg = "black", bg = "yellow" }
+
+marker_copied   = { fg = "black", bg = "#00F2FF" }
+marker_cut      = { fg = "black", bg = "red" }
+marker_marked   = { fg = "black", bg = "#00F2FF" }
+marker_selected = { fg = "black", bg = "#00F2FF" }
+
+tab_active   = { fg = "black", bg = "#00F2FF", bold = true }
+tab_inactive = { fg = "black" }
+tab_width = 1
+
+count_copied   = { fg = "black", bg = "#00F2FF" }
+count_cut      = { fg = "black", bg = "red" }
+count_selected = { fg = "black", bg = "#00F2FF" }
+
+border_symbol = "│"
+border_style  = { fg = "#00F2FF" }
+
+[status]
+separator_open  = ""
+separator_close = ""
+separator_style = { fg = "#00F2FF" }
+
+mode_normal = { fg = "black", bg = "#00F2FF", bold = true }
+mode_select = { fg = "black", bg = "#00F2FF", bold = true }
+mode_unset  = { fg = "black", bg = "#00F2FF", bold = true }
+
+progress_label  = { fg = "black", bold = true }
+progress_normal = { fg = "black", bg = "#00F2FF" }
+progress_error  = { fg = "black", bg = "red" }
+
+permissions_t = { fg = "black" }
+permissions_r = { fg = "black" }
+permissions_w = { fg = "black" }
+permissions_x = { fg = "black" }
+permissions_s = { fg = "black" }
+
+[input]
+border   = { fg = "#00F2FF" }
+title    = { fg = "black", bold = true }
+value    = { fg = "black" }
+selected = { bg = "#00F2FF", fg = "black" }
+
+[completion]
+border   = { fg = "#00F2FF" }
+active   = { bg = "#00F2FF", fg = "black" }
+inactive = { fg = "black" }
+
+[tasks]
+border  = { fg = "#00F2FF" }
+title   = { fg = "black", bold = true }
+hovered = { bg = "#00F2FF", fg = "black" }
+
+[which]
+cols = 3
+mask = {}
+cand = { fg = "black", bold = true }
+rest = { fg = "black" }
+desc = { fg = "black" }
+separator = "  "
+separator_style = { fg = "#00F2FF" }
+
+[help]
+on      = { fg = "black", bold = true }
+run     = { fg = "black" }
+hovered = { bg = "#00F2FF", fg = "black" }
+footer  = { fg = "black", bg = "#00F2FF" }
+
+[notify]
+title_info  = { fg = "black", bg = "#00F2FF" }
+title_warn  = { fg = "black", bg = "yellow" }
+title_error = { fg = "black", bg = "red" }
+
+icon_info  = ""
+icon_warn  = ""
+icon_error = ""
+
+[filetype]
+rules = [
+  { name = "*/", fg = "black", bold = true },
+  { mime = "image/*", fg = "black" },
+  { mime = "video/*", fg = "black" },
+  { mime = "audio/*", fg = "black" },
+
+  { mime = "application/zip", fg = "black" },
+  { mime = "application/gzip", fg = "black" },
+  { mime = "application/x-tar", fg = "black" },
+  { mime = "application/x-bzip*", fg = "black" },
+  { mime = "application/x-7z-compressed", fg = "black" },
+  { mime = "application/x-rar", fg = "black" },
+
+  { name = "*", fg = "black" }
+]
