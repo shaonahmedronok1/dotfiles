@@ -1,0 +1,160 @@
+#!/bin/sh
+
+# ===== ENVIRONMENT VARIABLES =====
+export XDG_CURRENT_DESKTOP=river
+export XDG_SESSION_TYPE=wayland
+export QT_QPA_PLATFORM=wayland
+export MOZ_ENABLE_WAYLAND=1
+
+# ===== PORTAL INITIALIZATION =====
+# Kill any old portals
+pkill -x xdg-desktop-portal-wlr
+pkill -x xdg-desktop-portal-gtk
+pkill -x xdg-desktop-portal
+
+# Wait for cleanup
+sleep 1
+
+# Start backend portals first
+/usr/libexec/xdg-desktop-portal-wlr &
+/usr/libexec/xdg-desktop-portal-gtk &
+
+# Wait for them to register
+sleep 2
+
+# Start main portal
+/usr/libexec/xdg-desktop-portal &
+
+# Wait for it to initialize
+sleep 2
+
+# Tell D-Bus about our environment
+dbus-update-activation-environment --systemd \
+  WAYLAND_DISPLAY \
+  XDG_CURRENT_DESKTOP \
+  XDG_SESSION_TYPE \
+  QT_QPA_PLATFORM
+
+# Tell systemd too
+systemctl --user import-environment \
+  WAYLAND_DISPLAY \
+  XDG_CURRENT_DESKTOP \
+  XDG_SESSION_TYPE
+
+# Autostart programs
+riverctl spawn "mako &"
+# riverctl spawn "wlsunset -l 22.84 -L 89.54 -t 4500 -T 6500 &"
+riverctl spawn "swww-daemon &"
+riverctl spawn "udiskie &"
+
+# Keyboard settings
+riverctl keyboard-layout us
+riverctl set-option keyboard-options ctrl:nocaps
+riverctl set-repeat 50 300
+
+# Keybinds - Terminal
+riverctl map normal Super Return spawn alacritty
+
+# Keybinds - Launcher
+riverctl map normal Super Space spawn "fuzzel --show drun"
+
+# Keybinds - Close window
+riverctl map normal Super C close
+
+# Keybinds - Exit River
+riverctl map normal Super+Shift E exit
+
+# Keybinds - Focus (vim keys)
+riverctl map normal Super H focus-view left
+riverctl map normal Super J focus-view down
+riverctl map normal Super K focus-view up
+riverctl map normal Super L focus-view right
+
+# Keybinds - Focus (arrows)
+riverctl map normal Super Left focus-view left
+riverctl map normal Super Down focus-view down
+riverctl map normal Super Up focus-view up
+riverctl map normal Super Right focus-view right
+
+# Keybinds - Move windows (vim keys)
+riverctl map normal Super+Shift H swap left
+riverctl map normal Super+Shift J swap down
+riverctl map normal Super+Shift K swap up
+riverctl map normal Super+Shift L swap right
+
+# Keybinds - Move windows (arrows)
+riverctl map normal Super+Shift Left swap left
+riverctl map normal Super+Shift Down swap down
+riverctl map normal Super+Shift Up swap up
+riverctl map normal Super+Shift Right swap right
+
+# Keybinds - Workspaces (tags) 1-9
+for i in $(seq 1 9); do
+  tags=$((1 << ($i - 1)))
+  riverctl map normal Super $i set-focused-tags $tags
+  riverctl map normal Super+Shift $i set-view-tags $tags
+done
+
+# Keybinds - Toggle floating
+riverctl map normal Super+Shift Space toggle-float
+
+# Keybinds - Fullscreen
+riverctl map normal Super F toggle-fullscreen
+
+# Keybinds - Audio
+riverctl map normal None XF86AudioMute spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+riverctl map normal None XF86AudioLowerVolume spawn "pactl set-sink-volume @DEFAULT_SINK@ -11%"
+riverctl map normal None XF86AudioRaiseVolume spawn "pactl set-sink-volume @DEFAULT_SINK@ +11%"
+
+# Brightness using PageUp/PageDown (No Sudo needed after Step 1)
+riverctl map normal Super Page_Up spawn "ddcutil setvcp 12 + 15"
+riverctl map normal Super Page_Down spawn "ddcutil setvcp 12 - 15"
+
+# Keybinds - Screenshots
+riverctl map normal Super Z spawn "~/.local/bin/ss.sh"
+riverctl map normal Super+Shift Z spawn "~/.local/bin/ss.sh region"
+
+# Keybinds - Wallpaper
+riverctl map normal Super W spawn "~/.config/river/cycle-wallpaper.sh"
+
+# Keybinds - sk wrapper (from your Hyprland config)
+riverctl map normal Super I spawn "alacritty --title=sk -e ~/.local/bin/sk-open-wrapper"
+
+# ===== RESIZE MODE =====
+riverctl declare-mode resize
+riverctl map normal Super R enter-mode resize
+
+# Adjust main ratio (tiled windows)
+riverctl map resize None Right send-layout-cmd rivertile "main-ratio +0.05"
+riverctl map resize None Left send-layout-cmd rivertile "main-ratio -0.05"
+
+# Resize floating windows
+riverctl map resize None Up resize-view 0 -50
+riverctl map resize None Down resize-view 0 50
+
+# Exit resize mode
+riverctl map resize None Escape enter-mode normal
+riverctl map resize None Return enter-mode normal
+
+# Mouse bindings
+riverctl map-pointer normal Super BTN_LEFT move-view
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+
+# Appearance - Borders (from your Hyprland config)
+riverctl border-width 6
+riverctl border-color-focused 0x00F2FF
+riverctl border-color-unfocused 0x7A004D
+
+# Appearance - Background
+riverctl background-color 0xf4ead5
+
+# Appearance - Cursor
+riverctl xcursor-theme Adwaita 24
+
+# Layout - Reference Tiling
+riverctl default-layout rivertile
+
+# Reduced gaps for a professional, dense look:
+# 2px view padding = 4px total between windows.
+# 4px outer padding = minimal breathing room at screen edges.
+rivertile -view-padding 5 -outer-padding 4 &
