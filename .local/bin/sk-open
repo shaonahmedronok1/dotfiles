@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# sk-open - ULTIMATE SYSTEM-WIDE FILE LAUNCHER (RUST EDITION)
+
+SEARCH_PATHS=(
+  "$HOME"
+  "/usr/share/doc"
+  "/usr/share"
+  "/etc"
+  "/opt"
+  "/run/media/$USER"
+)
+
+# Search for files with fd and pipe to skim (sk)
+selected=$(fd --type f \
+  --hidden \
+  --no-ignore \
+  --follow \
+  --exclude 'proc' \
+  --exclude 'sys' \
+  --exclude 'dev' \
+  --exclude 'run/user' \
+  --exclude '.git/objects' \
+  --exclude 'node_modules' \
+  --exclude '__pycache__' \
+  --exclude '.cargo/registry' \
+  --exclude 'target/debug' \
+  --exclude 'target/release' \
+  --exclude 'lost+found' \
+  --exclude '.local/share/Trash' \
+  --exclude 'Cache/mozilla' \
+  --exclude 'cache/fontconfig' \
+  . "${SEARCH_PATHS[@]}" 2>/dev/null |
+  sk --preview 'bat --color=always --style=numbers --line-range=:500 {} 2>/dev/null || file -b {}' \
+    --preview-window=right:60%:wrap \
+    --prompt="🔍 🦀 " \
+    --header="Enter=Open | Ctrl-Y=Copy Path | ESC=Cancel" \
+    --bind="ctrl-y:execute-silent(echo -n {} | wl-copy && notify-send 'Copied' '{}')")
+
+# Exit if nothing selected
+[[ -z "$selected" ]] && exit 0
+
+# Detect file type
+mime=$(file --brief --mime-type "$selected")
+
+# Open file
+case "$mime" in
+image/*)
+  setsid -f imv "$selected" >/dev/null 2>&1
+  ;;
+video/*)
+  setsid -f mpv "$selected" >/dev/null 2>&1
+  ;;
+application/pdf)
+  setsid -f zathura "$selected" >/dev/null 2>&1
+  ;;
+text/html)
+  setsid -f firefox "$selected" >/dev/null 2>&1
+  ;;
+*)
+  # Open in helix (Rust editor) or zed
+  nvim "$selected"
+  exit 0
+  ;;
+esac
+
+# Exit immediately after launching detached programs
+exit 0

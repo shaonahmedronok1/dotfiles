@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+~/.local/bin/sk-open
+# Close terminal after script finishes if it was a detached program
+sleep 0.1
+exit 0
