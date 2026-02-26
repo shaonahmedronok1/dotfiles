@@ -1,0 +1,87 @@
+* {
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 18px;
+}
+
+/* Window */
+window {
+  margin: 0px;
+  padding: 10px;
+  border: 2px solid #00F2FF;
+  border-radius: 0px;
+  background-color: #FFFFFF;
+}
+
+/* Inner Box */
+#inner-box {
+  margin: 5px;
+  padding: 10px;
+  border: none;
+  background-color: #FFFFFF;
+}
+
+/* Outer Box */
+#outer-box {
+  margin: 5px;
+  padding: 10px;
+  border: none;
+  background-color: #FFFFFF;
+}
+
+/* Scroll */
+#scroll {
+  margin: 0px;
+  padding: 10px;
+  border: none;
+  background-color: #FFFFFF;
+}
+
+/* Input */
+#input {
+  margin: 5px 20px;
+  padding: 10px;
+  border: 1px solid #00F2FF;
+  border-radius: 0em;
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+#input image {
+  border: none;
+  color: #000000;
+}
+
+#input * {
+  outline: none;
+}
+
+/* Text */
+#text {
+  margin: 5px;
+  border: none;
+  color: #000000;
+}
+
+#entry {
+  background-color: #FFFFFF;
+}
+
+#entry arrow {
+  border: none;
+  color: #000000;
+}
+
+/* Selected Entry */
+#entry:selected {
+  background-color: #00F2FF;
+  border: 2px solid #00F2FF;
+}
+
+#entry:selected #text {
+  color: #000000;
+}
+
+/* Drag / Drop */
+#entry:drop(active) {
+  background-color: #00F2FF;
+}
