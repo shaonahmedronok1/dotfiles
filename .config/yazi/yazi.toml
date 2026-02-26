@@ -1,0 +1,39 @@
+[mgr]
+show_hidden = true
+
+[[opener.browser]]
+run = 'firefox "$@"'
+orphan = true
+desc = "Open in Firefox"
+for = "unix"
+
+[[open.prepend_rules]]
+mime = "text/html"
+use = "browser"
+
+[[open.prepend_rules]]
+mime = "application/xhtml+xml"
+use = "browser"
+
+
+
+[opener]
+edit = [
+    { run = 'nvim "$@"', block = true, for = "unix" },
+]
+open = [
+    { run = 'xdg-open "$@"', desc = "Open", for = "unix" },
+]
+image = [
+    { run = 'imv "$@"', orphan = true, for = "unix" },
+]
+play_audio = [
+    { run = 'killall -q mpv; mpv --force-window --no-resume-playback "$@"', desc = "Play Audio" }
+]
+[open]
+rules = [
+    { mime = "audio/*", use = "play_audio" },
+    { mime = "image/*", use = "image" },
+    { mime = "text/*", use = "edit" },
+    { mime = "video/*", use = [ "open" ] },
+]
