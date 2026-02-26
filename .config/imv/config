@@ -1,0 +1,19 @@
+[binds]
+# Delete with 'd' key
+d = exec rm "$imv_current_file"; close
+
+# Move to trash with 'x' key (safer)
+x = exec trash "$imv_current_file"; close
+
+# Next/previous
+<Left> = prev
+<Right> = next
+
+# Rotate
+r = rotate by 90
+R = rotate by -90
+
+# Zoom
+= = zoom 1
++ = zoom 2
+- = zoom 0.5
