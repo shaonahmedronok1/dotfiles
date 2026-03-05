@@ -1,0 +1,44 @@
+format = """
+$os$username$directory$git_branch$git_status$cmd_duration
+$character"""
+
+[os]
+disabled = false
+style = "bold #c2185b"
+
+[os.symbols]
+NixOS = " "
+
+[username]
+show_always = false
+style_user = "bold #c2185b"
+format = "[$user]($style) "
+
+[directory]
+style = "bold #880e4f"
+truncation_length = 3
+truncate_to_repo = true
+format = "[$path]($style)[$read_only]($read_only_style) "
+
+[git_branch]
+symbol = " "
+style = "bold #c2185b"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "bold #c2185b"
+format = "([$all_status$ahead_behind]($style)) "
+
+[cmd_duration]
+min_time = 2000
+style = "#888888"
+format = "[$duration]($style) "
+
+[character]
+success_symbol = "[❯](bold #c2185b)"
+error_symbol = "[❯](bold red)"
+
+[nix_shell]
+symbol = " "
+style = "bold #c2185b"
+format = "[$symbol$state]($style) "
