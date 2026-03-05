@@ -15,9 +15,9 @@
 
 <div align="center">
 
-## 🌸 Structure
+---
 
-</div>
+## 🌸 Structure
 ```
 dotfiles/
 ├── .config/
