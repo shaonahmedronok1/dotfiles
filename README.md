@@ -38,7 +38,8 @@ dotfiles/
 │   ├── wofi/
 │   ├── xdg-desktop-portal/
 │   └── yazi/
-├── .local/bin/
+├── .local/
+│   └── bin/
 ├── .bashrc
 └── packages.txt
 ```
