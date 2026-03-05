@@ -1,0 +1,141 @@
+#!/bin/sh
+
+# ===== ENVIRONMENT =====
+export XDG_CURRENT_DESKTOP=river
+export XDG_SESSION_TYPE=wayland
+export QT_QPA_PLATFORM=wayland
+export MOZ_ENABLE_WAYLAND=1
+
+# ===== DBUS =====
+dbus-update-activation-environment --systemd \
+  WAYLAND_DISPLAY \
+  XDG_CURRENT_DESKTOP \
+  XDG_SESSION_TYPE \
+  QT_QPA_PLATFORM
+systemctl --user import-environment \
+  WAYLAND_DISPLAY \
+  XDG_CURRENT_DESKTOP \
+  XDG_SESSION_TYPE
+
+# ===== AUTOSTART =====
+riverctl spawn "mako"
+riverctl spawn "~/.config/river/wallpaper-loader.sh"
+riverctl spawn "udiskie -t"
+riverctl spawn "waybar"
+riverctl spawn "flameshot"
+riverctl spawn "swayidle -w timeout 300 'swaylock -f' timeout 600 'systemctl suspend' before-sleep 'swaylock -f'"
+riverctl spawn "flameshot"
+riverctl spawn "wl-clip-persist --clipboard regular"
+
+# ===== KEYBOARD =====
+riverctl keyboard-layout us
+riverctl set-repeat 50 300
+
+# ===== KEYBINDS =====
+riverctl map normal Super Return spawn alacritty
+riverctl map normal Super Space spawn "fuzzel --show drun"
+riverctl map normal Super B spawn chromium
+riverctl map normal Super C close
+riverctl map normal Super+Shift E exit
+riverctl map normal Super F toggle-fullscreen
+riverctl map normal Super+Shift Space toggle-float
+
+riverctl map normal Super F1 spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+riverctl map normal Super F2 spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+riverctl map normal Super F3 spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%"
+
+# Focus
+riverctl map normal Super H focus-view left
+riverctl map normal Super J focus-view down
+riverctl map normal Super K focus-view up
+riverctl map normal Super L focus-view right
+riverctl map normal Super Left focus-view left
+riverctl map normal Super Down focus-view down
+riverctl map normal Super Up focus-view up
+riverctl map normal Super Right focus-view right
+
+# Swap
+riverctl map normal Super+Shift H swap left
+riverctl map normal Super+Shift J swap down
+riverctl map normal Super+Shift K swap up
+riverctl map normal Super+Shift L swap right
+riverctl map normal Super+Shift Left swap left
+riverctl map normal Super+Shift Down swap down
+riverctl map normal Super+Shift Up swap up
+riverctl map normal Super+Shift Right swap right
+
+riverctl map normal Super V spawn "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
+riverctl map normal Super+Shift X spawn "swaylock -f"
+
+# Workspaces
+for i in $(seq 1 9); do
+  tags=$((1 << ($i - 1)))
+  riverctl map normal Super $i set-focused-tags $tags
+  riverctl map normal Super+Shift $i set-view-tags $tags
+done
+
+# Audio
+riverctl map normal None XF86AudioMute spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+riverctl map normal None XF86AudioLowerVolume spawn "pactl set-sink-volume @DEFAULT_SINK@ -11%"
+riverctl map normal None XF86AudioRaiseVolume spawn "pactl set-sink-volume @DEFAULT_SINK@ +11%"
+
+# Brightness
+riverctl map normal Super Page_Up spawn "ddcutil setvcp 10 + 15"
+riverctl map normal Super Page_Down spawn "ddcutil setvcp 10 - 15"
+
+# Screenshots
+riverctl map normal Super Z spawn "~/.local/bin/screenshot-capture-wayland.sh"
+riverctl map normal Super+Shift Z spawn "~/.local/bin/screenshot-capture-wayland.sh"
+
+# Wallpaper
+riverctl map normal Super W spawn "~/.config/river/cycle-wallpaper.sh"
+
+# File manager
+riverctl map normal Super E spawn nautilus
+
+# Lock screen
+riverctl map normal Super+Shift L spawn "swaylock -f -c 1a1a2e"
+
+# Notification dismiss
+riverctl map normal Super N spawn "makoctl dismiss"
+riverctl map normal Super+Shift N spawn "makoctl dismiss --all"
+
+# Scratchpad toggle (floating terminal)
+riverctl map normal Super grave spawn "alacritty --class scratch"
+
+# Move views to/from output
+riverctl map normal Super+Shift period send-to-output next
+riverctl map normal Super+Shift comma send-to-output previous
+
+# ===== RESIZE MODE =====
+riverctl declare-mode resize
+riverctl map normal Super R enter-mode resize
+riverctl map resize None Right send-layout-cmd rivertile "main-ratio +0.05"
+riverctl map resize None Left send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map resize None Up resize-view 0 -50
+riverctl map resize None Down resize-view 0 50
+riverctl map resize None Escape enter-mode normal
+riverctl map resize None Return enter-mode normal
+
+# Mouse
+riverctl map-pointer normal Super BTN_LEFT move-view
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+
+# ===== APPEARANCE =====
+riverctl border-width 4
+riverctl border-color-focused 0xCF1358
+riverctl border-color-unfocused 0x4A0030
+riverctl xcursor-theme Adwaita 24
+
+# ===== Monitor's REfresh rate =====
+riverctl spawn "wlr-randr --output HDMI-A-2 --mode 1280x1024@75.004997"
+
+# ===== Warm light =====
+riverctl spawn "wlsunset -l 22.84 -L 89.54 -t 4500 -T 6500"
+
+# ===== Clipbaord =====
+riverctl spawn "wl-paste --watch cliphist store"
+
+# ===== LAYOUT =====
+riverctl default-layout rivertile
+rivertile -view-padding 5 -outer-padding 4 &
